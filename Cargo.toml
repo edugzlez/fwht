@@ -1,0 +1,16 @@
+[package]
+name = "fwht"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "A Rust library for Fast Walsh-Hadamard Transform (FWHT)"
+homepage = "https://github.com/edugzlez/fwht"
+repository = "https://github.com/edugzlez/fwht"
+authors = ["Eduardo González Vaquero <edugonzalezvaq@gmail.com>"]
+
+[dependencies]
+ndarray = { version = "0.17.1", optional = true }
+
+[features]
+default = ["ndarray"]
+ndarray = ["dep:ndarray"]

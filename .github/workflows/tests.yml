@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/tests.yml"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/tests.yml"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+
+name: 🧪 Testing and coverage
+
+jobs:
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛒 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: 🦀 Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: ⬇️ Install tarpaulin
+        run: cargo install cargo-tarpaulin
+
+      - name: ⬇️ Run cargo-tarpaulin
+        run: cargo tarpaulin --workspace --all-features --out Xml
+        env:
+          CARGO_INCREMENTAL: 0
+
+      - name: ⬆️ Upload to codecov.io
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
